@@ -11,7 +11,7 @@ You should have received a copy of the GNU General Public License along with Mad
 If not, see <http://www.gnu.org/licenses/>.
 */
 
-require "/root/phpBot/predis/autoload.php";
+require "/root/apiBots/predis/autoload.php";
 require "Bot/Bot.php";
 
 set_include_path(get_include_path() . ':' . realpath(dirname(__FILE__) . '/MadelineProto/'));
@@ -20,12 +20,13 @@ require_once 'vendor/autoload.php';
 if(file_exists('web_data.php')) {
     require_once 'web_data.php';
 }
-
-echo 'Deserializing MadelineProto from session2.madeline...' . PHP_EOL;
+$session_ = $argv[1];
+$session_ = 'session'. $session_ .'.madeline';
+echo 'Deserializing MadelineProto from '. $session_ .'...' . PHP_EOL;
 $MadelineProto = false;
 
 try {
-    $MadelineProto = \danog\MadelineProto\Serialization::deserialize('session2.madeline');
+    $MadelineProto = \danog\MadelineProto\Serialization::deserialize($session_);
 }
 catch(\danog\MadelineProto\Exception $e) {
     var_dump($e->getMessage());
@@ -72,8 +73,8 @@ if($MadelineProto === false) {
             $authorization = $MadelineProto->complete_signup(readline('Please enter your first name: '), readline('Please enter your last name (can be empty): '));
         }
 
-        echo 'Serializing MadelineProto to session2.madeline...' . PHP_EOL;
-        echo 'Wrote ' . \danog\MadelineProto\Serialization::serialize('session2.madeline', $MadelineProto) . ' bytes' . PHP_EOL;
+        echo 'Serializing MadelineProto to '. $session_ .'...' . PHP_EOL;
+        echo 'Wrote ' . \danog\MadelineProto\Serialization::serialize($session_, $MadelineProto) . ' bytes' . PHP_EOL;
     }
     else {
         $MadelineProto->bot_login(getenv('BOT_TOKEN'));
@@ -88,8 +89,8 @@ if($MadelineProto === false) {
 
 $message = (getenv('TRAVIS_COMMIT') == '') ? 'I iz works always (io laborare sembre) (yo lavorar siempre) (mi labori ĉiam) (я всегда работать) (Ik werkuh altijd) (Ngimbonga ngaso sonke isikhathi ukusebenza)' : ('Travis ci tests in progress: commit ' . getenv('TRAVIS_COMMIT') . ', job ' . getenv('TRAVIS_JOB_NUMBER') . ', PHP version: ' . getenv('TRAVIS_PHP_VERSION'));
 
-echo 'Serializing MadelineProto to session2.madeline...' . PHP_EOL;
-echo 'Wrote ' . \danog\MadelineProto\Serialization::serialize('session2.madeline', $MadelineProto) . ' bytes' . PHP_EOL;
+echo 'Serializing MadelineProto to '. $session_ .'...' . PHP_EOL;
+echo 'Wrote ' . \danog\MadelineProto\Serialization::serialize($session_, $MadelineProto) . ' bytes' . PHP_EOL;
 /*
 $m = new \danog\MadelineProto\API($settings);
 $m->import_authorization($MadelineProto->export_authorization());
@@ -148,6 +149,6 @@ while(1) {
 
         }
     }
-    \danog\MadelineProto\Serialization::serialize('session2.madeline', $MadelineProto);
-//        echo 'Wrote '.\danog\MadelineProto\Serialization::serialize('session2.madeline', $MadelineProto).' bytes'.PHP_EOL;
+    \danog\MadelineProto\Serialization::serialize($session_, $MadelineProto);
+//        echo 'Wrote '.\danog\MadelineProto\Serialization::serialize($session_, $MadelineProto).' bytes'.PHP_EOL;
 }
